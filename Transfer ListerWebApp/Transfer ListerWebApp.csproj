@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Transfer_ListerWebApp</RootNamespace>
+    <UserSecretsId>ec72c3e4-eb80-440b-af92-0d271d24d7d6</UserSecretsId>
   </PropertyGroup>
 
 </Project>

@@ -8,10 +8,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<ApplicationDbContext>(option =>
+var connectionString = builder.Configuration.GetConnectionString("SqlServerConnection")
+    ?? throw new InvalidOperationException(
+        "Connection string 'SqlServerConnection' is not configured.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    option.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnection"));
+    options.UseSqlServer(connectionString);
 });
+
 builder.Services.AddAutoMapper(_ => { }, typeof(AutoMapperConfiguration).Assembly);
 builder.Services.AddControllers();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();

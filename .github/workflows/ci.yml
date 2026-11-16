@@ -1,0 +1,52 @@
+
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - "feature/**"
+      - "ci/**"
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build, test and audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up .NET 10 SDK
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Display .NET information
+        run: dotnet --info
+
+      - name: Restore dependencies
+        run: dotnet restore "Transfer Lister.sln"
+
+      - name: Report vulnerable NuGet packages
+        run: dotnet package list --project "Transfer Lister.sln" --vulnerable --include-transitive --no-restore
+
+      - name: Build solution
+        run: dotnet build "Transfer Lister.sln" --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test "Transfer Lister.sln" --configuration Release --no-build --no-restore
