@@ -1,5 +1,6 @@
 ﻿@using Transfer_ListerWebApp.Models.DTO
 @model List<PlayerDTO>
+
 @{
     ViewData["Title"] = "Transfer List";
 }
@@ -7,12 +8,43 @@
 <div class="container text-center">
     <h2>Your Transfer Listed Players</h2>
 
-    @if(TempData["Success"] != null)
+    <div class="d-flex justify-content-end align-items-center gap-2 mb-3">
+
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <span>
+                Administrator: @User.Identity.Name
+            </span>
+
+            <form asp-controller="Admin"
+                  asp-action="Logout"
+                  method="post"
+                  class="d-inline">
+
+                <button type="submit" class="btn btn-secondary">
+                    Logout
+                </button>
+
+            </form>
+        }
+        else
+        {
+            <a asp-controller="Admin"
+               asp-action="Login"
+               class="btn btn-success">
+                Administrator Login
+            </a>
+        }
+
+    </div>
+
+    @if (TempData["Success"] != null)
     {
         <div class="alert alert-success">
             @TempData["Success"]
         </div>
     }
+
     @if (TempData["Error"] != null)
     {
         <div class="alert alert-danger">
@@ -29,31 +61,64 @@
                 <th>Born Date</th>
                 <th>Price (€ in milions)</th>
                 <th>Listed Date</th>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <th>Actions</th>
+                }
             </tr>
         </thead>
+
         <tbody>
             @foreach (var player in Model)
             {
                 <tr>
                     <td>@player.FirstName</td>
                     <td>@player.LastName</td>
+
                     <td>
                         @string.Join(" | ", player.Positions.Select(p => p.PositionName))
                     </td>
+
                     <td>@player.BornDate</td>
                     <td>@player.Price</td>
                     <td>@player.ListedDate</td>
-                    <td>
-                        <a asp-action="Update" asp-route-Id="@player.Id" class="btn btn-warning"><i class="bi bi-pencil-square" style="color: white"></i></a>
-                        <form asp-action="Delete" asp-route-Id="@player.Id" method="post" onsubmit="return confirm('Are you sure want to delete this player ?');" style="display:inline">
-                            <button type="submit" class="btn btn-danger">
-                                <i class="bi bi-trash3-fill"></i>
-                            </button>
-                        </form>
-                    </td>
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <td>
+                            <a asp-action="Update"
+                               asp-route-Id="@player.Id"
+                               class="btn btn-warning">
+                                <i class="bi bi-pencil-square" style="color: white"></i>
+                            </a>
+
+                            <form asp-action="Delete"
+                                  asp-route-Id="@player.Id"
+                                  method="post"
+                                  onsubmit="return confirm('Are you sure you want to delete this player?');"
+                                  style="display:inline">
+
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+
+                            </form>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
     </table>
-    <a class="btn btn-success" id="addButton" asp-action="Create">Add player <i class="bi bi-plus-circle"></i></a>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a class="btn btn-success"
+           id="addButton"
+           asp-action="Create">
+
+            Add player <i class="bi bi-plus-circle"></i>
+
+        </a>
+    }
 </div>

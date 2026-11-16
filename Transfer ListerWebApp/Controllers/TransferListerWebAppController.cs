@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Transfer_ListerWebApp.Models.DTO;
 using Transfer_ListerWebApp.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Transfer_ListerWebApp.Controllers
 {
+    [Authorize]
     public class TransferListerWebAppController : Controller
     {
         private readonly IPlayerService _playerService;
@@ -12,6 +14,7 @@ namespace Transfer_ListerWebApp.Controllers
         {
             _playerService = playerService;
         }
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var players = await _playerService.GetPlayersAsync();
@@ -74,7 +77,7 @@ namespace Transfer_ListerWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(int id, UpdatePlayerDTO dto)
         {
-            var player = _playerService.GetSingleAsync(id);
+            var player = await _playerService.GetSingleAsync(id);
 
             if (player == null)
             {
