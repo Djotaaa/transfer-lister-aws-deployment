@@ -12,7 +12,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnection"));
 });
-builder.Services.AddAutoMapper(typeof(AutoMapperConfiguration));
+builder.Services.AddAutoMapper(_ => { }, typeof(AutoMapperConfiguration).Assembly);
 builder.Services.AddControllers();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IPositionRepository, PositionRepository>();
