@@ -1,0 +1,23 @@
+version: 2
+
+updates:
+  - package-ecosystem: "nuget"
+    directories:
+      - "/Transfer ListerAPI"
+      - "/Transfer ListerWebApp"
+      - "/tests/TransferLister.Tests"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "nuget"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
